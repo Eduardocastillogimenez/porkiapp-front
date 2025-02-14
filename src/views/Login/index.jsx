@@ -1,23 +1,27 @@
 import { useState } from "react";
 import { Form, Input, Button, Checkbox, message, Spin } from "antd";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import axiosInstance from "../../axiosSetup";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../features/auth/userSlice";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
+  const nav = useNavigate();
+  const dispatch = useDispatch();
 
   const onFinish = async (values) => {
     console.log("Valores del formulario:", values);
     setLoading(true);
     try {
-      // Realizamos la petición POST a /login con el body esperado.
       const response = await axiosInstance.post("/login", {
         email: values.email,
         password: values.password,
       });
-      console.log("Inicio de sesión exitoso:", response.data);
+      const token = response.data.access_token;
+      dispatch(loginSuccess({ user: values.email, token }));
       message.success("Inicio de sesión exitoso");
-      // Aquí puedes agregar la lógica para redireccionar o almacenar el token, etc.
+      nav("/dashboards");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
       message.error("Error en el inicio de sesión");
