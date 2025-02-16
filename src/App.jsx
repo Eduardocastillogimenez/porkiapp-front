@@ -3,6 +3,7 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 import Dasboards from "./views/dasboards";
 import PrivateRoute from "./components/PrivateRoute";
+import Profile from "./views/profile";
 
 function App() {
   return (
@@ -15,6 +16,14 @@ function App() {
           element={
             <PrivateRoute>
               <Dasboards />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
             </PrivateRoute>
           }
         />

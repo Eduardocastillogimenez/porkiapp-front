@@ -2,19 +2,47 @@ import React, { useState } from 'react';
 import { Table, Button, Modal, Checkbox, Form, Input, Select, InputNumber } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import ContainerMain from '../../components/Layout.jsx'
-import { TablePig } from './utils.jsx'
+import { TablePig } from './table.jsx';
+
+const data = [
+  {
+    key: '12gda623',
+    codigo: '12gda623',
+    codigoParto: '4455',
+    edad: 32,
+    peso: 12,
+    genero: 'Macho',
+  },
+  {
+    key: 'awfwa5256',
+    codigo: 'awfwa5256',
+    codigoParto: '4455565',
+    edad: 42,
+    peso: 10,
+    genero: 'Hembra',
+  },
+  {
+    key: 'watwwa8148',
+    codigo: 'watwwa8148',
+    codigoParto: '445574',
+    edad: 32,
+    peso: 85,
+    genero: 'Macho',
+  },
+  {
+    key: 'awwf0065',
+    codigo: 'awwf0065',
+    codigoParto: '0055',
+    edad: 32,
+    peso: 50,
+    genero: 'Hembra',
+  },
+];
 
 const Dasboards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [data, setData] = useState([]);
-
-  const addPig = () => {
-    setIsModalOpen(true);
-  };
-  
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
+  const [dataPick, setDataPick] = useState(data);
+  const [form] = Form.useForm();
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -22,7 +50,14 @@ const Dasboards = () => {
 
   const onFinish = (values) => {
     console.log('Success:', values);
+    values.key = values.codigo;
+    const dataPickTemporary = dataPick;
+    dataPickTemporary.push(values);
+    setDataPick(dataPickTemporary);
+    setIsModalOpen(false);
+    form.resetFields();
   };
+
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
@@ -30,7 +65,6 @@ const Dasboards = () => {
   const onChange = (pagination, filters, sorter, extra) => {
     console.log('params', pagination, filters, sorter, extra);
   };
-
 
   return (
     <ContainerMain>
@@ -41,7 +75,7 @@ const Dasboards = () => {
           </Button>
         }
       >
-        <Form name="basic" labelCol={{ span: 8, }} wrapperCol={{ span: 16, }} style={{ maxWidth: 600, }}
+        <Form name="basic" labelCol={{ span: 8, }} wrapperCol={{ span: 16, }} style={{ maxWidth: 600, }} form={form}
           initialValues={{ remember: true, }} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off"
         >
           <Form.Item name="codigo" label="Codigo"  rules={[ { required: true, message: 'Introduzca el Codigo!', }, ]} >
@@ -85,9 +119,9 @@ const Dasboards = () => {
         </Form>
       
       </Modal>
-      <Button type='primary' onClick={addPig}>Registrar cerdo</Button>
+      <Button type='primary' onClick={()=> setIsModalOpen(true)}>Registrar cerdo</Button>
       {/* <Table columns={columns} dataSource={data} onChange={onChange} /> */}
-      <TablePig/>
+      <TablePig dataPick={dataPick}/>
     </ContainerMain>
    
 )

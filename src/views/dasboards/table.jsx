@@ -2,43 +2,8 @@ import React, { useRef, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Input, Space, Table } from 'antd';
 import Highlighter from 'react-highlight-words';
-const data = [
-  {
-    key: '1',
-    codigo: '12gda623',
-    codigoParto: '4455',
-    edad: 32,
-    peso: 12,
-    genero: 'Macho',
-  },
-  {
-    key: '2',
-    codigo: 'awfwa5256',
-    codigoParto: '4455565',
-    edad: 42,
-    peso: 10,
-    genero: 'Hembra',
-  },
-  {
-    key: '3',
-    codigo: 'watwwa8148',
-    codigoParto: '445574',
-    edad: 32,
-    peso: 85,
-    genero: 'Macho',
-  },
-  {
-    key: '4',
-    codigo: 'awwf0065',
-    codigoParto: '0055',
-    edad: 32,
-    peso: 50,
-    genero: 'Hembra',
-  },
-];
 
-
-export const TablePig = () => {
+export const TablePig = ({dataPick}) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
@@ -185,5 +150,5 @@ export const TablePig = () => {
       sortDirections: ['descend', 'ascend'],
     },
   ];
-  return <Table columns={columns} dataSource={data} />;
+  return <Table columns={columns} dataSource={dataPick} scroll={{ x: 'max-content', y: 'max-content' }}/>;
 };
