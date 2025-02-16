@@ -1,57 +1,85 @@
 import React, { useState } from 'react';
 import {
   DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
+  CalendarOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, Menu } from 'antd';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
+// function getItem(label, key, icon, children) {
+//   return {
+//     key,
+//     icon,
+//     children,
+//     label,
+//   };
+// }
 
 const items = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
-  ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [getItem('Team 1', '6'), getItem('Team 2', '8')]),
-  getItem('Files', '9', <FileOutlined />),
+  {
+    key: 'Perfil',
+    icon: <UserOutlined />,
+    label: (
+      <a href="/profile">
+        Perfil
+      </a>
+    ),
+  },
+  {
+    key: 'Granjas',
+    icon: <DesktopOutlined />,
+    label: (
+      <a href="/granjas">
+        Granjas
+      </a>
+    ),
+  },
+  {
+    key: 'Calendario',
+    icon: <CalendarOutlined />,
+    label: (
+      <a href="/calendar">
+        Calendario
+      </a>
+    ),
+  },
+  {
+    key: 'Dasboards',
+    icon: <CalendarOutlined />,
+    label: (
+      <a href="/dashboards">
+        Dasboards
+      </a>
+    ),
+  }
 ];
 
 const ContainerMain = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-        <div className="demo-logo-vertical" />
-        <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: 'white' }} />
-        <Content style={{ padding: '5px', paddingTop: '15px' }}>
-          {/* <Breadcrumb style={{ margin: '16px 0' }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb> */}
-          {children}
-        </Content>
-        <Footer style={{ textAlign: 'center' }}>Buenas tardes Footer</Footer>
+    <div style={{ height: '100vh', width:'100vw', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <Layout style={{ height: '100%', width:'100%' }}>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+          <div className="demo-logo-vertical" />
+          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline" items={items} />
+        </Sider>
+        <Layout>
+          <Header style={{ padding: 0, background: 'white' }} />
+          <Content style={{ padding: '20px', paddingTop: '30px' }}>
+            {/* <Breadcrumb style={{ margin: '16px 0' }}>
+              <Breadcrumb.Item>User</Breadcrumb.Item>
+              <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            </Breadcrumb> */}
+            {children}
+          </Content>
+          <Footer style={{ textAlign: 'center' }}>PorkiApp</Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </div>
+    
   );
 };
 
