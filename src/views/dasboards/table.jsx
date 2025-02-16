@@ -133,6 +133,8 @@ export const TablePig = ({dataPick}) => {
       key: 'edad',
       width: '20%',
       ...getColumnSearchProps('edad'),
+      sorter: (a, b) => a.edad - b.edad,
+      sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Peso',
@@ -140,6 +142,8 @@ export const TablePig = ({dataPick}) => {
       key: 'peso',
       width: '20%',
       ...getColumnSearchProps('peso'),
+      sorter: (a, b) => a.peso - b.peso,
+      sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Genero',
