@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Calendar, Modal, List, Button, Form, Input, DatePicker } from "antd";
-import dayjs from "dayjs";
+import { Calendar, Modal, List, Button } from "antd";
 import ContainerMain from '../../components/Layout.jsx';
 import CreateEvent from "./createEvent.jsx";
 import styled from "styled-components";
