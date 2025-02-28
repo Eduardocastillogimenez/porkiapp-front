@@ -40,7 +40,7 @@ const items = [
     key: 'Calendario',
     icon: <CalendarOutlined />,
     label: (
-      <a href="/calendar">
+      <a href="/event">
         Calendario
       </a>
     ),
