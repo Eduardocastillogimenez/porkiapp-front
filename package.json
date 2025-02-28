@@ -13,11 +13,13 @@
     "@reduxjs/toolkit": "^2.5.1",
     "antd": "^5.23.4",
     "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-highlight-words": "^0.21.0",
     "react-redux": "^9.2.0",
-    "react-router": "^7.1.5"
+    "react-router": "^7.1.5",
+    "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

@@ -4,6 +4,7 @@ import Register from "./views/Register";
 import Dasboards from "./views/dasboards";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./views/profile";
+import Event from "./views/event";
 
 function App() {
   return (
@@ -25,6 +26,14 @@ function App() {
             <PrivateRoute>
               <Profile />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/event"
+          element={
+            // <PrivateRoute>
+              <Event />
+            // </PrivateRoute>
           }
         />
       </Routes>
