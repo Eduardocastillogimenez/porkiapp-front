@@ -5,15 +5,17 @@ import Dasboards from "./views/dasboards";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./views/profile";
 import Event from "./views/event";
+import Index from "./views";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
-          path="/dashboards"
+          path="/dashboard"
           element={
             <PrivateRoute>
               <Dasboards />
@@ -32,7 +34,7 @@ function App() {
           path="/event"
           element={
             // <PrivateRoute>
-              <Event />
+            <Event />
             // </PrivateRoute>
           }
         />

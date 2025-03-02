@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router";
 import axiosInstance from "../../axiosSetup";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../../features/auth/userSlice";
+import { setFarms, setSelectedFarm } from "../../features/farms/farmSlice";
 
 const Login = () => {
   const [loading, setLoading] = useState(false);
@@ -19,9 +20,11 @@ const Login = () => {
         password: values.password,
       });
       const token = response.data.access_token;
+      dispatch(setFarms(response.data.data.farms));
+      dispatch(setSelectedFarm(response.data.data.farms[0]));
       dispatch(loginSuccess({ user: values.email, token }));
       message.success("Inicio de sesión exitoso");
-      nav("/dashboards");
+      nav("/dashboard");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
       message.error("Error en el inicio de sesión");

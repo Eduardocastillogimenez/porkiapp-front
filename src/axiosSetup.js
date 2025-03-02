@@ -27,6 +27,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       // Maneja errores de autorización, por ejemplo, redirige al login
       console.error("No autorizado, por favor inicia sesión nuevamente.");
+      localStorage.removeItem("token");
     }
     return Promise.reject(error);
   }
