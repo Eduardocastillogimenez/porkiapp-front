@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { Table, Button, Modal, Checkbox, Form, Input, Select, InputNumber } from 'antd';
-import { ExclamationCircleFilled } from '@ant-design/icons';
+import { Button, Modal, Form, Input, Select, InputNumber, Space } from 'antd';
 import ContainerMain from '../../components/Layout.jsx'
 import { TablePig } from './table.jsx';
+import styled from "styled-components";
+
+const FirmContent = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+`;
 
 const data = [
   {
@@ -39,9 +46,21 @@ const data = [
   },
 ];
 
+const selectFimOption = [
+  {
+    value: 'granjaLucy',
+    label: 'Granja de Lucy',
+  },
+  {
+    value: 'Yiminghe',
+    label: 'yiminghe el granjero',
+  }
+]
+
 const Dasboards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [dataPick, setDataPick] = useState(data);
+  const [modalCreateFirm, setModalCreateFirm] = useState(false);
   const [form] = Form.useForm();
 
   const handleCancel = () => {
@@ -62,13 +81,13 @@ const Dasboards = () => {
     console.log('Failed:', errorInfo);
   };
   
-  const onChange = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
+  const handleChangeFirm = (value) => {
+    console.log(`selected ${value}`);
   };
 
   return (
     <ContainerMain>
-      <Modal title="Registro de cerdo" open={isModalOpen}
+      <Modal title="Registro de cerdo" open={isModalOpen} onCancel={()=> setIsModalOpen(false)}
         footer={
           <Button type="primary" onClick={handleCancel}>
             Cancelar
@@ -86,12 +105,6 @@ const Dasboards = () => {
             <Input />
           </Form.Item>
 
-          {/* <Form.Item label="Password" name="password"
-            rules={[ { required: true, message: 'Please input your password!',  }, ]}
-          >
-            <Input.Password />
-          </Form.Item> */}
-
           <Form.Item name="genero" label="Genero" rules={[ { required: true, message: 'Introduzca el Genero', } ]} >
             <Select placeholder="Seleccione una opción" allowClear >
               <Option value="Macho">Macho</Option>
@@ -107,20 +120,26 @@ const Dasboards = () => {
             <InputNumber style={{ width: '100%', }} />
           </Form.Item>
 
-          {/* <Form.Item name="remember" valuePropName="checked" label={null}>
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item> */}
-
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
               Submit
             </Button>
           </Form.Item>
         </Form>
-      
       </Modal>
+      <Modal title="Crear granja" open={modalCreateFirm} footer={null} onCancel={()=> setModalCreateFirm(false)}>
+        
+      </Modal>
+
+    <FirmContent>
+      <Button type='primary' onClick={()=> setModalCreateFirm(true)}>Crear granja</Button>
+      <Space wrap>
+        <Select defaultValue="granjaLucy" style={{maxWidth: '200px'}}  onChange={handleChangeFirm} options={selectFimOption} />
+      </Space>
+    </FirmContent>
+      
+      <h1>Dashboard</h1>
       <Button type='primary' onClick={()=> setIsModalOpen(true)}>Registrar cerdo</Button>
-      {/* <Table columns={columns} dataSource={data} onChange={onChange} /> */}
       <TablePig dataPick={dataPick}/>
     </ContainerMain>
    
