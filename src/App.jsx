@@ -33,9 +33,9 @@ function App() {
         <Route
           path="/event"
           element={
-            // <PrivateRoute>
-            <Event />
-            // </PrivateRoute>
+            <PrivateRoute>
+              <Event />
+            </PrivateRoute>
           }
         />
       </Routes>
