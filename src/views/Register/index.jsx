@@ -14,7 +14,6 @@ const Register = () => {
       const response = await axiosInstance.post("/register", values);
       console.log("Registro exitoso:", response.data);
       message.success("Registro exitoso");
-      // Aquí puedes agregar redireccionamiento o alguna acción adicional
     } catch (error) {
       console.error("Error al registrar usuario:", error);
       message.error("Error al registrar usuario");
