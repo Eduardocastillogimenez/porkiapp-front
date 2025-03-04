@@ -20,8 +20,9 @@ const Login = () => {
         password: values.password,
       });
       const token = response.data.access_token;
-      dispatch(setFarms(response.data.data.farms));
-      dispatch(setSelectedFarm(response.data.data.farms[0]));
+      const farms = response.data.data.farms;
+      dispatch(setFarms(farms));
+      dispatch(setSelectedFarm(farms[0]));
       dispatch(loginSuccess({ user: values.email, token }));
       message.success("Inicio de sesión exitoso");
       nav("/dashboard");

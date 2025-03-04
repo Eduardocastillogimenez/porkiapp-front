@@ -23,7 +23,7 @@ const FarmDropdown = () => {
     >
       {farms.map((farm) => (
         <Option key={farm.id} value={farm.id}>
-          {farm.name}
+          Granja {farm.name}
         </Option>
       ))}
     </Select>
