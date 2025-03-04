@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Modal, Form, Input, Select, InputNumber, DatePicker } from "antd";
 import ContainerMain from "../../components/Layout.jsx";
 import { TablePig } from "./table.jsx";
+import { PigInfoModal } from "./report.jsx";
 import styled from "styled-components";
 import axiosInstance from "../../axiosSetup";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,12 +25,25 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
+const dataTest = [  // no borrar
+  {
+    key: '1',
+    birth_code: 'awfawa4',
+    parent_id: 32,
+    gender: 'Macho',
+    weight: 13,
+    birth_date: '10-10-2020'
+  },
+]
+
 const Dasboards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Inicializamos dataPick como arreglo vacío y se actualizará con la respuesta real
   const { farms } = useSelector((state) => state.farm);
   const [dataPick, setDataPick] = useState([]);
+  const [detailsPig, setDetailsPig] = useState(false);  
   const [modalCreateFirm, setModalCreateFirm] = useState(false);
+  const [pigInfo, setPigInfo] = useState(false);
   const [form] = Form.useForm();
   const [formFarm] = Form.useForm();
 
@@ -126,6 +140,13 @@ const Dasboards = () => {
 
   const onFinishFailedFarm = (errorInfo) => {
     console.log("Failed:", errorInfo);
+  };
+
+  const seePigDetails = (birth_code) => {
+    console.log("birth_code:", birth_code);
+    setDetailsPig(true);
+    const selectPig = dataPick.find(e=> e.birth_code === birth_code)
+    setPigInfo(selectPig)
   };
 
   return (
@@ -226,6 +247,11 @@ const Dasboards = () => {
         </Form>
       </Modal>
 
+      {/* detalles de los cerdos */}
+      <Modal title="Detalles del cerdo" open={detailsPig} footer={null} onCancel={() => setDetailsPig(false)}>
+        <PigInfoModal pigInfo={pigInfo}/>
+      </Modal>
+
       <FirmContent>
         <Button type="primary" onClick={() => setModalCreateFirm(true)}>
           Crear granja
@@ -235,7 +261,7 @@ const Dasboards = () => {
       <Button type="primary" onClick={() => setIsModalOpen(true)} style={{ margin: "20px 0" }}>
         Registrar cerdo
       </Button>
-      <TablePig dataPick={dataPick} />
+      <TablePig dataPick={dataPick} seePigDetails={seePigDetails} />
     </ContainerMain>
   );
 };
