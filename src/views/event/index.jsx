@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar, Modal, List, Button } from "antd";
 import ContainerMain from "../../components/Layout.jsx";
 import CreateEvent from "./createEvent.jsx";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../axiosSetup";
 
 const DivMain = styled.div`
   @media (max-width: 800px) {
@@ -52,107 +54,61 @@ const ScrollableCalendar = styled.div`
 `;
 
 const CalendarioEventos = () => {
-  const [events, setEvents] = useState([
-    {
-      tipoEvento: "Vacunación",
-      fechaEvento: "2025-03-01",
-      duracion: 2,
-      idAnimal: "123",
-      nota: "Refuerzo anual",
-      descripcion: "Vacunación contra la fiebre porcina",
-    },
-    {
-      tipoEvento: "Alimentación",
-      fechaEvento: "2025-03-01",
-      duracion: 1,
-      idAnimal: "12awfa46",
-      nota: "Comida especial",
-      descripcion: "Aumento de proteína en la dieta",
-    },
-    {
-      tipoEvento: "Vacunación",
-      fechaEvento: "2025-03-01",
-      duracion: 1,
-      idAnimal: "fawfa",
-      nota: "Proteinas",
-      descripcion: "Aumento de proteína en la dieta",
-    },
-    {
-      tipoEvento: "Alimentación",
-      fechaEvento: "2025-03-10",
-      duracion: 1,
-      idAnimal: "124afa",
-      nota: "Comida especial",
-      descripcion: "Aumento de proteína en la dieta",
-    },
-    {
-      tipoEvento: "Alimentación",
-      fechaEvento: "2025-03-10",
-      duracion: 1,
-      idAnimal: "124ahjj",
-      nota: "especial",
-      descripcion: "Aumento de proteína en la dieta",
-    },
-    {
-      tipoEvento: "Alimentación",
-      fechaEvento: "2025-03-20",
-      duracion: 1,
-      idAnimal: "12466",
-      nota: "Comida especial",
-      descripcion: "Aumento de proteína en la dieta",
-    },
-    {
-      tipoEvento: "Alimentación",
-      fechaEvento: "2025-03-22",
-      duracion: 1,
-      idAnimal: "12s364",
-      nota: "Comida especial",
-      descripcion: "Aumento de proteína en la dieta",
-    },
-    {
-      tipoEvento: "Revisión médica",
-      fechaEvento: "2025-03-05",
-      duracion: 1,
-      idAnimal: "4588dh6",
-      nota: "Chequeo general",
-      descripcion: "Revisión de salud completa",
-    },
-  ]);
-
+  // Se obtiene la granja seleccionada desde Redux (suponemos que es el id o el objeto)
+  const { selectedFarm } = useSelector((state) => state.farm);
+  const [events, setEvents] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [createformModal, setCreateformModal] = useState(false);
   const [selectedEvents, setSelectedEvents] = useState([]);
 
+  // Se obtiene la lista de eventos para la granja seleccionada
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (!selectedFarm) return;
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axiosInstance.get("/events", {
+          headers: { Authorization: `Bearer ${token}` },
+          params: { farm_id: selectedFarm.id || selectedFarm }, // Puede ser un objeto o el id directamente
+        });
+        if (response.data.success) {
+          setEvents(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+
+    fetchEvents();
+  }, [selectedFarm]);
+
+  // Renderiza el contador de eventos en cada celda del calendario basado en reminder_date
   const dateCellRender = (value) => {
     const eventDate = value.format("YYYY-MM-DD");
-    const dayEvents = events.filter((event) => event.fechaEvento === eventDate);
+    const dayEvents = events.filter((event) => event.reminder_date === eventDate);
     return dayEvents.length ? (
-      <div style={{ background: "#1890ff", color: "white", padding: "2px", borderRadius: "5px", textAlign: "center" }}>
+      <div
+        style={{
+          background: "#1890ff",
+          color: "white",
+          padding: "2px",
+          borderRadius: "5px",
+          textAlign: "center",
+        }}
+      >
         {dayEvents.length} Evento(s)
       </div>
     ) : null;
   };
 
+  // Al seleccionar una fecha se muestran los detalles de los eventos de ese día
   const onSelect = (value) => {
     const eventDate = value.format("YYYY-MM-DD");
-    const dayEvents = events.filter((event) => event.fechaEvento === eventDate);
+    const dayEvents = events.filter((event) => event.reminder_date === eventDate);
     if (dayEvents.length) {
       setSelectedEvents(dayEvents);
       setModalVisible(true);
     }
-  };
-
-  const handleCreateEvent = (values) => {
-    const newEvent = {
-      tipoEvento: values.tipoEvento,
-      fechaEvento: values.fechaEvento.format("YYYY-MM-DD"),
-      duracion: values.duracion,
-      idAnimal: values.idAnimal || "",
-      nota: values.nota || "",
-      descripcion: values.descripcion || "",
-    };
-    setEvents([...events, newEvent]);
-    setCreateformModal(false);
   };
 
   return (
@@ -175,28 +131,43 @@ const CalendarioEventos = () => {
                 <List.Item>
                   <div>
                     <p>
-                      <strong>Tipo:</strong> {event.tipoEvento}
+                      <strong>ID:</strong> {event.id}
                     </p>
                     <p>
-                      <strong>Fecha:</strong> {event.fechaEvento}
+                      <strong>Mensaje:</strong> {event.message}
                     </p>
                     <p>
-                      <strong>Duración:</strong> {event.duracion} días
+                      <strong>Fecha de Recordatorio:</strong> {event.reminder_date}
                     </p>
-                    {event.idAnimal && (
-                      <p>
-                        <strong>ID Animal:</strong> {event.idAnimal}
-                      </p>
+                    <p>
+                      <strong>ID del Cerdo:</strong> {event.pig_id}
+                    </p>
+                    <p>
+                      <strong>Tipo:</strong> {event.type}
+                    </p>
+                    <p>
+                      <strong>Activo:</strong> {event.active ? "Sí" : "No"}
+                    </p>
+                    {event.pig && (
+                      <div style={{ marginLeft: 10 }}>
+                        <p>
+                          <strong>Datos del Cerdo:</strong>
+                        </p>
+                        <p>Género: {event.pig.gender}</p>
+                        <p>Peso: {event.pig.weight}</p>
+                        <p>Código de Nacimiento: {event.pig.birth_code}</p>
+                        <p>Fecha de Nacimiento: {event.pig.birth_date}</p>
+                      </div>
                     )}
-                    {event.nota && (
-                      <p>
-                        <strong>Nota:</strong> {event.nota}
-                      </p>
-                    )}
-                    {event.descripcion && (
-                      <p>
-                        <strong>Descripción:</strong> {event.descripcion}
-                      </p>
+                    {event.treatment && (
+                      <div style={{ marginLeft: 10 }}>
+                        <p>
+                          <strong>Tratamiento:</strong>
+                        </p>
+                        <p>Nombre: {event.treatment.name}</p>
+                        <p>Descripción: {event.treatment.description}</p>
+                        <p>Estado: {event.treatment.status}</p>
+                      </div>
                     )}
                   </div>
                 </List.Item>

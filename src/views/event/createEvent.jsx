@@ -1,70 +1,119 @@
 import React from "react";
 import { Form, Input, DatePicker, Select, Button } from "antd";
+import { useSelector } from "react-redux";
+import axiosInstance from "../../axiosSetup";
 
 const { Option } = Select;
 
 const CreateEvent = (props) => {
   const [form] = Form.useForm();
-  const {setEvents, events, setCreateformModal} = props;
+  const { setEvents, events, setCreateformModal } = props;
+  // Se obtiene el array de granjas y la granja seleccionada desde Redux
+  const { farms, selectedFarm } = useSelector((state) => state.farm);
+  const [pigs, setPigs] = React.useState([]);
 
-  const onFinish = (values) => {
-    console.log("Evento creado con éxito:", values);
-    const newEvent = {
-      tipoEvento: values.tipoEvento,
-      fechaEvento: values.fechaEvento.format("YYYY-MM-DD"),
-      duracion: values.duracion,
-      idAnimal: values.idAnimal || "",
-      nota: values.nota || "",
-      descripcion: values.descripcion || "",
+  // Función para obtener los cerdos según la granja seleccionada
+  const fetchPigsByFarm = async (farmId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosInstance.get(`/pig?farm_id=${farmId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.data.success) {
+        setPigs(response.data.data);
+      } else {
+        setPigs([]);
+      }
+    } catch (error) {
+      console.error("Error fetching pigs:", error);
+      setPigs([]);
+    }
+  };
+
+  // Cuando se cambia la granja en el formulario
+  const handleFarmChange = (value) => {
+    if (value) {
+      fetchPigsByFarm(value);
+      // Reiniciamos el campo de cerdo
+      form.setFieldsValue({ pig_id: undefined });
+    } else {
+      setPigs([]);
+      form.setFieldsValue({ pig_id: undefined });
+    }
+  };
+
+  const onFinish = async (values) => {
+    const payload = {
+      message: values.message,
+      pig_id: Number(values.pig_id),
+      farm_id: Number(values.farm_id),
+      reminder_date: values.reminder_date.format("YYYY-MM-DD"),
+      type: "reminder",
     };
-    setEvents([...events, newEvent]);
-    setCreateformModal(false);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axiosInstance.post("/events", payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("Evento creado con éxito:", response.data);
+      setEvents([...events, response.data.data]);
+      setCreateformModal(false);
+      form.resetFields();
+    } catch (error) {
+      console.error("Error creando evento:", error);
+    }
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Falló la creación del evento:", errorInfo);
   };
 
   return (
     <div style={{ maxWidth: 500, margin: "auto", padding: 20, background: "#fff", borderRadius: 8 }}>
       <h2 style={{ textAlign: "center" }}>Crear Evento</h2>
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
         <Form.Item
-          name="tipoEvento"
-          label="Tipo de Evento"
-          rules={[{ required: true, message: "Por favor seleccione el tipo de evento" }]}
+          name="message"
+          label="Mensaje"
+          rules={[{ required: true, message: "Por favor, ingrese un mensaje" }]}
         >
-          <Select placeholder="Seleccione un tipo de evento">
-            <Option value="vacunacion">Vacunación</Option>
-            <Option value="alimentacion">Alimentación</Option>
-            <Option value="reproduccion">Reproducción</Option>
+          <Input placeholder="Ej: Vender animal" />
+        </Form.Item>
+        <Form.Item
+          name="farm_id"
+          label="Granja"
+          rules={[{ required: true, message: "Por favor, seleccione la granja" }]}
+          initialValue={selectedFarm ? selectedFarm.id : undefined}
+        >
+          <Select placeholder="Seleccione una granja" allowClear onChange={handleFarmChange}>
+            {farms.map((farm) => (
+              <Option key={farm.id} value={farm.id}>
+                {farm.name}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
-
+        <Form.Item name="pig_id" label="Cerdo" rules={[{ required: true, message: "Por favor, seleccione el cerdo" }]}>
+          <Select placeholder="Seleccione un cerdo" allowClear>
+            {pigs.map((pig) => (
+              <Option key={pig.id} value={pig.id}>
+                {pig.birth_code ? pig.birth_code : `Cerdo ${pig.id}`}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item
-          name="fechaEvento"
-          label="Fecha del Evento"
-          rules={[{ required: true, message: "Por favor seleccione la fecha del evento" }]}
+          name="reminder_date"
+          label="Fecha de Recordatorio"
+          rules={[{ required: true, message: "Por favor, seleccione la fecha" }]}
         >
-          <DatePicker style={{ width: "100%" }} />
+          <DatePicker format="YYYY-MM-DD" style={{ width: "100%" }} />
         </Form.Item>
-
-        <Form.Item
-          name="duracion"
-          label="Duración Promedio (días)"
-          rules={[{ required: true, message: "Por favor ingrese la duración" }]}
-        >
-          <Input type="number" placeholder="Ingrese la duración en días" />
-        </Form.Item>
-
-        <Form.Item name="idAnimal" label="ID del Animal">
-          <Input placeholder="Opcional: ID del animal asociado" />
-        </Form.Item>
-
-        <Form.Item name="nota" label="Nota del Evento">
-          <Input.TextArea rows={2} placeholder="Opcional: Nota adicional" />
-        </Form.Item>
-
-        <Form.Item name="descripcion" label="Descripción">
-          <Input.TextArea rows={3} placeholder="Opcional: Descripción del evento" />
-        </Form.Item>
-
         <Form.Item>
           <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
             Crear Evento

@@ -25,23 +25,12 @@ const Title = styled.h1`
   margin-bottom: 10px;
 `;
 
-const dataTest = [  // no borrar
-  {
-    key: '1',
-    birth_code: 'awfawa4',
-    parent_id: 32,
-    gender: 'Macho',
-    weight: 13,
-    birth_date: '10-10-2020'
-  },
-]
-
 const Dasboards = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Inicializamos dataPick como arreglo vacío y se actualizará con la respuesta real
-  const { farms } = useSelector((state) => state.farm);
+  const { farms, selectedFarm } = useSelector((state) => state.farm);
   const [dataPick, setDataPick] = useState([]);
-  const [detailsPig, setDetailsPig] = useState(false);  
+  const [detailsPig, setDetailsPig] = useState(false);
   const [modalCreateFirm, setModalCreateFirm] = useState(false);
   const [pigInfo, setPigInfo] = useState(false);
   const [form] = Form.useForm();
@@ -54,7 +43,7 @@ const Dasboards = () => {
     const fetchPigs = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axiosInstance.get("/pig", {
+        const response = await axiosInstance.get(`/pig?farm_id=${selectedFarm.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,12 +52,13 @@ const Dasboards = () => {
           setDataPick(response.data.data);
         }
       } catch (error) {
+        if (error.status === 404) setDataPick([]);
         console.error("Error fetching pigs: ", error);
       }
     };
 
     fetchPigs();
-  }, []);
+  }, [selectedFarm]);
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -145,8 +135,8 @@ const Dasboards = () => {
   const seePigDetails = (birth_code) => {
     console.log("birth_code:", birth_code);
     setDetailsPig(true);
-    const selectPig = dataPick.find(e=> e.birth_code === birth_code)
-    setPigInfo(selectPig)
+    const selectPig = dataPick.find((e) => e.birth_code === birth_code);
+    setPigInfo(selectPig);
   };
 
   return (
@@ -249,7 +239,7 @@ const Dasboards = () => {
 
       {/* detalles de los cerdos */}
       <Modal title="Detalles del cerdo" open={detailsPig} footer={null} onCancel={() => setDetailsPig(false)}>
-        <PigInfoModal pigInfo={pigInfo}/>
+        <PigInfoModal pigInfo={pigInfo} />
       </Modal>
 
       <FirmContent>
