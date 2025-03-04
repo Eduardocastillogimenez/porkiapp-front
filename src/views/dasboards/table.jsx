@@ -3,10 +3,11 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Button, Input, Space, Table } from "antd";
 import Highlighter from "react-highlight-words";
 
-export const TablePig = ({ dataPick }) => {
+export const TablePig = (props) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  const { dataPick, seePigDetails } = props
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -90,6 +91,7 @@ export const TablePig = ({ dataPick }) => {
       key: "birth_code",
       width: "20%",
       ...getColumnSearchProps("birth_code"),
+      render: (text) => <a onClick={()=>seePigDetails(text)}>{text}</a>,
     },
     {
       title: "Código de Parto",
