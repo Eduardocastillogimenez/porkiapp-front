@@ -1,0 +1,1 @@
+html,body,#root{height:100%;margin:0}.header{background-color:#001529;padding:0 24px}.content{padding:50px;display:flex;justify-content:center;align-items:center;min-height:calc(100vh - 64px)}.card{width:300px}.avatar{width:150px;height:150px}:root{font-family:Inter,system-ui,Avenir,Helvetica,Arial,sans-serif}body{margin:0;padding:0}
