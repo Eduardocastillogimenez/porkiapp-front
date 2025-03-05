@@ -1,11 +1,16 @@
 import { useState } from "react";
 import { Form, Input, Button, message, Spin } from "antd";
 import axiosInstance from "../../axiosSetup";
-import { Link } from "react-router";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../features/auth/userSlice";
+import { useNavigate, Link } from "react-router";
+import { setSelectedFarm, setFarms } from "../../features/farms/farmSlice"; 
 
 const Register = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const nav = useNavigate();
 
   const onFinish = async (values) => {
     console.log("Datos de registro:", values);
@@ -14,6 +19,14 @@ const Register = () => {
       const response = await axiosInstance.post("/register", values);
       console.log("Registro exitoso:", response.data);
       message.success("Registro exitoso");
+
+      const farmsData = response.data.user.farms;
+      if (farmsData) {
+        dispatch(setFarms(farmsData));
+      }
+
+      dispatch(loginSuccess({ user: response.data.user.email, token: response.data.access_token }));
+      nav("/select-farm");
     } catch (error) {
       console.error("Error al registrar usuario:", error);
       message.error("Error al registrar usuario");

@@ -22,10 +22,10 @@ const Login = () => {
       const token = response.data.access_token;
       const farms = response.data.data.farms;
       dispatch(setFarms(farms));
-      dispatch(setSelectedFarm(farms[0]));
+      // dispatch(setSelectedFarm(farms[0]));
       dispatch(loginSuccess({ user: values.email, token }));
       message.success("Inicio de sesión exitoso");
-      nav("/dashboard");
+      nav("/select-farm");
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
       message.error("Error en el inicio de sesión");

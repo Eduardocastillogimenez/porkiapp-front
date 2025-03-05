@@ -5,6 +5,7 @@ import Dasboards from "./views/dasboards";
 import PrivateRoute from "./components/PrivateRoute";
 import Profile from "./views/profile";
 import Event from "./views/event";
+import SelectFarm from "./views/select_farm";
 import Index from "./views";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/select-farm" element={<SelectFarm />} />
         <Route
           path="/dashboard"
           element={
