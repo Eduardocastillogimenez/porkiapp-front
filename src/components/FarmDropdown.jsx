@@ -13,17 +13,17 @@ const FarmDropdown = () => {
     const farm = farms.find((f) => f.id === farmId);
     dispatch(setSelectedFarm(farm));
   };
-
+console.log(farms)
   return (
     <Select
       placeholder="Selecciona una granja"
       onChange={handleChange}
       value={selectedFarm ? selectedFarm.id : undefined}
-      style={{ width: 200 }}
+      // style={{ width: 300 }}
     >
       {farms.map((farm) => (
         <Option key={farm.id} value={farm.id}>
-          Granja {farm.name}
+          Granja {farm.name}, code: {farm.invitation_code}
         </Option>
       ))}
     </Select>
