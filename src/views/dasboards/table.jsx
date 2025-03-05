@@ -95,11 +95,11 @@ export const TablePig = (props) => {
     },
     {
       title: "Código del Padre",
-      dataIndex: "parent_id",
-      key: "parent_id",
+      dataIndex: "parent_code",
+      key: "parent_code",
       width: "20%",
       render: (text, record) => (text ? text.toString() : record.id.toString()),
-      ...getColumnSearchProps("parent_id"),
+      ...getColumnSearchProps("parent_code"),
     },
     {
       title: "Género",
