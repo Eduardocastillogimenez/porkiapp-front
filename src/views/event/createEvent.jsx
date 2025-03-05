@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, DatePicker, Select, Button } from "antd";
 import { useSelector } from "react-redux";
 import axiosInstance from "../../axiosSetup";
@@ -31,6 +31,10 @@ const CreateEvent = (props) => {
       setPigs([]);
     }
   };
+
+  useEffect(() => {
+    fetchPigsByFarm(selectedFarm.id);
+  }, []);
 
   // Cuando se cambia la granja en el formulario
   const handleFarmChange = (value) => {
