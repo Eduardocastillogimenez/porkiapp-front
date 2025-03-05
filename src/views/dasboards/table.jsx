@@ -7,7 +7,7 @@ export const TablePig = (props) => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  const { dataPick, seePigDetails } = props
+  const { dataPick, seePigDetails } = props;
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -86,15 +86,15 @@ export const TablePig = (props) => {
 
   const columns = [
     {
-      title: "Código",
+      title: "Código de Parto",
       dataIndex: "birth_code",
       key: "birth_code",
       width: "20%",
       ...getColumnSearchProps("birth_code"),
-      render: (text) => <a onClick={()=>seePigDetails(text)}>{text}</a>,
+      render: (text) => <a onClick={() => seePigDetails(text)}>{text}</a>,
     },
     {
-      title: "Código de Parto",
+      title: "Código del Padre",
       dataIndex: "parent_id",
       key: "parent_id",
       width: "20%",

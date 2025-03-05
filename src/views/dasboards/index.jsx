@@ -70,9 +70,9 @@ const Dasboards = () => {
       const payload = {
         gender: values.genero === "Hembra" ? "female" : "male",
         weight: values.peso,
-        farm_id: parseInt(values.farm_id, 10),
-        birth_code: values.codigo,
+        farm_id: selectedFarm.id, // Se utiliza el id de la granja seleccionada
         birth_date: values.birth_date.format("YYYY-MM-DD"),
+        parent_id: values.parent_id ? Number(values.parent_id) : null,
       };
 
       const token = localStorage.getItem("token");
@@ -162,10 +162,6 @@ const Dasboards = () => {
           onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
-          {/* Campo para birth_code */}
-          <Form.Item name="codigo" label="Código" rules={[{ required: true, message: "Introduzca el Código!" }]}>
-            <Input />
-          </Form.Item>
           {/* Campo para género */}
           <Form.Item name="genero" label="Género" rules={[{ required: true, message: "Seleccione el Género" }]}>
             <Select placeholder="Seleccione una opción" allowClear>
@@ -177,12 +173,16 @@ const Dasboards = () => {
           <Form.Item name="peso" label="Peso" rules={[{ required: true, message: "Introduzca el Peso" }]}>
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
-          {/* Campo para granja (farm_id) */}
-          <Form.Item name="farm_id" label="Granja" rules={[{ required: true, message: "Seleccione la granja" }]}>
-            <Select placeholder="Seleccione una granja" allowClear>
-              {farms.map((option) => (
-                <Select.Option key={option.name} value={option.id}>
-                  {option.name}
+          {/* Mostrar la granja actual (solo lectura) */}
+          <Form.Item label="Granja">
+            <Input value={selectedFarm?.name || "Ninguna granja seleccionada"} disabled />
+          </Form.Item>
+          {/* Campo para parent_id (opcional) */}
+          <Form.Item name="parent_id" label="Cerdo Padre (opcional)">
+            <Select placeholder="Seleccione el cerdo padre" allowClear>
+              {dataPick.map((pig) => (
+                <Select.Option key={pig.id} value={pig.id}>
+                  {pig.birth_code}
                 </Select.Option>
               ))}
             </Select>
