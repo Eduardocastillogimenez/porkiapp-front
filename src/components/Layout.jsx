@@ -21,11 +21,6 @@ const items = [
     label: <a href="/profile">Perfil</a>,
   },
   {
-    key: "Granjas",
-    icon: <DesktopOutlined />,
-    label: <a href="/granjas">Granjas</a>,
-  },
-  {
     key: "Calendario",
     icon: <CalendarOutlined />,
     label: <a href="/event">Calendario</a>,
